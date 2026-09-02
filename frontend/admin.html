@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" href="favicon.svg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EcoCollect Admin Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7f5;
+            color: #333;
+        }
+
+        header {
+            background: #198754;
+            color: white;
+            text-align: center;
+            padding: 25px 15px;
+        }
+
+        header h1 {
+            margin: 0 0 8px;
+        }
+
+        header p {
+            margin: 0;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1600px;
+            margin: 30px auto;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        h2 {
+            margin: 0;
+            color: #198754;
+        }
+
+        .refresh-btn {
+            background: #479947;
+            color: rgb(16, 16, 16);
+            border: none;
+            padding: 11px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .refresh-btn:hover {
+            background: #48a548;
+        }
+
+        /* ================================
+           STATISTICS
+        ================================= */
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            margin: 0 0 10px;
+            font-size: 16px;
+        }
+
+        .stat-card p {
+            margin: 0;
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .pending-card h3 {
+            color: #856404;
+        }
+
+        .approved-card h3 {
+            color: #0c5460;
+        }
+
+        .pickup-card h3 {
+            color: #0d6efd;
+        }
+
+        .completed-card h3 {
+            color: #155724;
+        }
+
+        .rejected-card h3 {
+            color: #721c24;
+        }
+
+        /* ================================
+           SEARCH AND FILTER
+        ================================= */
+
+        .search-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .search-filter input {
+            flex: 1;
+            padding: 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .search-filter select {
+            width: 250px;
+            padding: 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        /* ================================
+           TABLE
+        ================================= */
+
+        .table-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1250px;
+        }
+
+        th,
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #e8f5e9;
+            color: #155724;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* ================================
+           STATUS
+        ================================= */
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .approved {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .pickup-assigned {
+            background: #cfe2ff;
+            color: #084298;
+        }
+
+        .out-for-pickup {
+            background: #cff4fc;
+            color: #055160;
+        }
+
+        .picked-up {
+            background: #e2e3e5;
+            color: #41464b;
+        }
+
+        .completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* ================================
+           ACTION BUTTONS
+        ================================= */
+
+        .actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 7px 10px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .approve-btn {
+            background: #198754;
+        }
+
+        .approve-btn:hover {
+            background: #146c43;
+        }
+
+        .reject-btn {
+            background: #dc3545;
+        }
+
+        .reject-btn:hover {
+            background: #bb2d3b;
+        }
+
+        .pickup-status-select {
+            background: #0d6efd;
+            border: none;
+            padding: 7px 10px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .pickup-status-select option {
+            color: #333;
+            background: white;
+        }
+
+        /* ================================
+           MESSAGES
+        ================================= */
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+
+        .error {
+            text-align: center;
+            padding: 30px;
+            color: #721c24;
+            background: #f8d7da;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+        }
+
+        /* ================================
+           MOBILE
+        ================================= */
+
+        @media (max-width: 900px) {
+
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .search-filter {
+                flex-direction: column;
+            }
+
+            .search-filter select {
+                width: 100%;
+            }
+
+        }
+
+        @media (max-width: 500px) {
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================================
+         HEADER
+    ================================= -->
+
+    <header>
+
+        <h1>♻️ EcoCollect Admin Dashboard</h1>
+
+        <p>Pickup Request Management</p>
+
+    </header>
+
+
+    <div class="container">
+
+        <!-- ================================
+             TOP BAR
+        ================================= -->
+
+        <div class="top-bar">
+
+            <h2>Pickup Requests</h2>
+
+            <button
+                class="refresh-btn"
+                onclick="loadPickups()">
+
+                🔄 Refresh Requests
+
+            </button>
+            <button
+             class="refresh-btn"
+             onclick="logoutAdmin()">
+             🚪 Logout
+            </button>
+
+        </div>
+
+
+        <!-- ================================
+             STATISTICS
+        ================================= -->
+
+        <div class="stats-container">
+
+            <div class="stat-card pending-card">
+
+                <h3>Pending</h3>
+
+                <p id="pendingCount">0</p>
+
+            </div>
+
+
+            <div class="stat-card approved-card">
+
+                <h3>Approved</h3>
+
+                <p id="approvedCount">0</p>
+
+            </div>
+
+
+            <div class="stat-card pickup-card">
+
+                <h3>Out for Pickup</h3>
+
+                <p id="outPickupCount">0</p>
+
+            </div>
+
+
+            <div class="stat-card completed-card">
+
+                <h3>Completed</h3>
+
+                <p id="completedCount">0</p>
+
+            </div>
+
+
+            <div class="stat-card rejected-card">
+
+                <h3>Rejected</h3>
+
+                <p id="rejectedCount">0</p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================
+             SEARCH AND FILTER
+        ================================= -->
+
+        <div class="search-filter">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="🔍 Search by name, email, mobile, location..."
+            >
+
+
+            <select id="statusFilter">
+
+                <option value="">All Status</option>
+
+                <option value="Pending">
+                    Pending
+                </option>
+
+                <option value="Approved">
+                    Approved
+                </option>
+
+                <option value="Pickup Assigned">
+                    Pickup Assigned
+                </option>
+
+                <option value="Out for Pickup">
+                    Out for Pickup
+                </option>
+
+                <option value="Picked Up">
+                    Picked Up
+                </option>
+
+                <option value="Completed">
+                    Completed
+                </option>
+
+                <option value="Rejected">
+                    Rejected
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- ================================
+             TABLE
+        ================================= -->
+
+        <div class="table-box">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Name</th>
+
+                        <th>Email</th>
+
+                        <th>Mobile</th>
+
+                        <th>Waste Type</th>
+
+                        <th>Weight</th>
+
+                        <th>Location</th>
+
+                        <th>Message</th>
+                        
+                        <th>Photo</th>
+
+                        <th>Status</th>
+
+                        <th>Date</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="pickupTableBody">
+
+                    <tr>
+
+                        <td
+                            colspan="11"
+                            class="loading">
+
+                            Loading pickup requests...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+<!-- =========================================
+     MANAGE COLLECTION POINTS
+========================================= -->
+
+<div class="container">
+
+    <div class="top-bar">
+        <h2>📍 Manage Collection Points</h2>
+
+        <button
+            class="refresh-btn"
+            onclick="loadCollectionPoints()">
+            🔄 Refresh Locations
+        </button>
+    </div>
+
+    <!-- ADD COLLECTION POINT FORM -->
+
+    <div class="table-box" style="margin-bottom: 25px;">
+
+        <h3 style="color:#198754; margin-top:0;">
+            ➕ Add Collection Point
+        </h3>
+
+        <form id="collectionPointForm">
+
+            <div style="
+                display:grid;
+                grid-template-columns:repeat(2, 1fr);
+                gap:15px;
+            ">
+
+                <input
+                    type="text"
+                    id="pointName"
+                    placeholder="Collection Point Name"
+                    required
+                    style="padding:12px; border:1px solid #ccc; border-radius:6px;"
+                >
+
+                <input
+                    type="text"
+                    id="pointAddress"
+                    placeholder="Full Address"
+                    required
+                    style="padding:12px; border:1px solid #ccc; border-radius:6px;"
+                >
+
+                <input
+                    type="text"
+                    id="pointWasteTypes"
+                    placeholder="Waste Type (example: E-Waste)"
+                    required
+                    style="padding:12px; border:1px solid #ccc; border-radius:6px;"
+                >
+
+                <select
+                    id="pointStatus"
+                    required
+                    style="padding:12px; border:1px solid #ccc; border-radius:6px;"
+                >
+                    <option value="">Select Status</option>
+                    <option value="Verify Before Visit">
+                        Verify Before Visit
+                    </option>
+                    <option value="Available">
+                        Available
+                    </option>
+                    <option value="Unavailable">
+                        Unavailable
+                    </option>
+                </select>
+
+            </div>
+
+            <button
+                type="submit"
+                class="refresh-btn"
+                style="margin-top:15px;">
+                ➕ Add Location
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- COLLECTION POINT TABLE -->
+
+    <div class="table-box">
+
+        <table style="min-width:900px;">
+
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Waste Type</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="collectionPointsBody">
+
+                <tr>
+                    <td
+                        colspan="5"
+                        class="loading">
+                        Loading collection points...
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+    <!-- ================================
+         FOOTER
+    ================================= -->
+
+    <footer>
+
+        © 2026 EcoCollect
+
+    </footer>
+
+
+    <script>
+
+        // Store all pickup requests
+        if (sessionStorage.getItem("adminLoggedIn") !== "true") {
+
+    window.location.href = "admin-login.html";
+
+}
+        let allPickups = [];
+
+
+        // =========================================
+        // DISPLAY PICKUPS IN TABLE
+        // =========================================
+
+        function displayPickups(pickups) {
+
+            const tableBody =
+                document.getElementById(
+                    "pickupTableBody"
+                );
+
+
+            if (pickups.length === 0) {
+
+                tableBody.innerHTML = `
+
+                    <tr>
+
+                        <td
+                            colspan="10"
+                            class="empty">
+
+                            No pickup requests found.
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+                return;
+
+            }
+
+
+            tableBody.innerHTML = "";
+
+
+            pickups.forEach(function (pickup) {
+
+                const row =
+                    document.createElement("tr");
+
+
+                const status =
+                    pickup.status || "Pending";
+
+
+                const statusClass =
+                    status
+                        .toLowerCase()
+                        .replace(/\s+/g, "-");
+
+
+                let formattedDate = "";
+
+
+                if (pickup.createdAt) {
+
+                    formattedDate =
+                        new Date(
+                            pickup.createdAt
+                        ).toLocaleString();
+
+                }
+
+
+                row.innerHTML = `
+
+                    <td>
+                        ${pickup.name || ""}
+                    </td>
+
+                    <td>
+                        ${pickup.email || ""}
+                    </td>
+
+                    <td>
+                        ${pickup.mobile || ""}
+                    </td>
+
+                    <td>
+                        ${pickup.wasteType || ""}
+                    </td>
+
+                    <td>
+                        ${pickup.weight || ""}
+                    </td>
+
+                    <td>
+                        ${pickup.location || ""}
+                    </td>
+
+                    <td>
+                        ${pickup.message || ""}
+                    </td>
+                    <td>
+    ${
+        pickup.photo
+        ? `
+            <a
+                href="http://localhost:5000/uploads/${pickup.photo}"
+                target="_blank">
+
+                📷 View Photo
+
+            </a>
+        `
+        : "No Photo"
+    }
+</td>
+
+                    <td>
+
+                        <span
+                            class="status ${statusClass}">
+
+                            ${status}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+                        ${formattedDate}
+                    </td>
+
+                    <td>
+
+                        <div class="actions">
+                            <button
+    class="action-btn reject-btn"
+    onclick="deletePickup('${pickup._id}')">
+
+    🗑️ Delete
+
+</button>
+
+                            ${
+                                status === "Pending"
+                                ? `
+
+                                    <button
+                                        class="action-btn approve-btn"
+                                        onclick="updateStatus('${pickup._id}', 'Approved')">
+
+                                        ✅ Approve
+
+                                    </button>
+
+                                `
+                                : ""
+                            }
+
+
+                            ${
+                                status === "Pending"
+                                ? `
+
+                                    <button
+                                        class="action-btn reject-btn"
+                                        onclick="updateStatus('${pickup._id}', 'Rejected')">
+
+                                        ❌ Reject
+
+                                    </button>
+
+                                `
+                                : ""
+                            }
+
+
+                            ${
+                                status === "Approved" ||
+                                status === "Pickup Assigned" ||
+                                status === "Out for Pickup" ||
+                                status === "Picked Up"
+                                ? `
+
+                                    <select
+                                        class="pickup-status-select"
+                                        onchange="changePickupStatus(
+                                            '${pickup._id}',
+                                            this.value
+                                        )">
+
+                                        <option value="">
+                                            🚚 Pickup Status
+                                        </option>
+
+                                        <option
+                                            value="Pickup Assigned"
+                                            ${status === "Pickup Assigned" ? "selected" : ""}>
+
+                                            📋 Pickup Assigned
+
+                                        </option>
+
+                                        <option
+                                            value="Out for Pickup"
+                                            ${status === "Out for Pickup" ? "selected" : ""}>
+
+                                            🚚 Out for Pickup
+
+                                        </option>
+
+                                        <option
+                                            value="Picked Up"
+                                            ${status === "Picked Up" ? "selected" : ""}>
+
+                                            📦 Picked Up
+
+                                        </option>
+
+                                        <option
+                                            value="Completed"
+                                            ${status === "Completed" ? "selected" : ""}>
+
+                                            ✅ Completed
+
+                                        </option>
+
+                                    </select>
+
+                                `
+                                : ""
+                            }
+
+                        </div>
+
+                    </td>
+
+                `;
+
+
+                tableBody.appendChild(row);
+
+            });
+
+        }
+
+
+        // =========================================
+        // UPDATE DASHBOARD STATISTICS
+        // =========================================
+
+        function updateStatistics(pickups) {
+
+            let pendingCount = 0;
+
+            let approvedCount = 0;
+
+            let outPickupCount = 0;
+
+            let completedCount = 0;
+
+            let rejectedCount = 0;
+
+
+            pickups.forEach(function (pickup) {
+
+                const status =
+                    pickup.status || "Pending";
+
+
+                if (status === "Pending") {
+
+                    pendingCount++;
+
+                }
+
+                else if (status === "Approved") {
+
+                    approvedCount++;
+
+                }
+
+                else if (
+                    status === "Out for Pickup"
+                ) {
+
+                    outPickupCount++;
+
+                }
+
+                else if (
+                    status === "Completed"
+                ) {
+
+                    completedCount++;
+
+                }
+
+                else if (
+                    status === "Rejected"
+                ) {
+
+                    rejectedCount++;
+
+                }
+
+            });
+
+
+            document.getElementById(
+                "pendingCount"
+            ).textContent =
+                pendingCount;
+
+
+            document.getElementById(
+                "approvedCount"
+            ).textContent =
+                approvedCount;
+
+
+            document.getElementById(
+                "outPickupCount"
+            ).textContent =
+                outPickupCount;
+
+
+            document.getElementById(
+                "completedCount"
+            ).textContent =
+                completedCount;
+
+
+            document.getElementById(
+                "rejectedCount"
+            ).textContent =
+                rejectedCount;
+
+        }
+
+
+        // =========================================
+        // LOAD PICKUP REQUESTS
+        // =========================================
+
+        async function loadPickups() {
+
+            const tableBody =
+                document.getElementById(
+                    "pickupTableBody"
+                );
+
+
+            tableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="10"
+                        class="loading">
+
+                        Loading pickup requests...
+
+                    </td>
+
+                </tr>
+
+            `;
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "http://localhost:5000/api/pickups"
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Server returned " +
+                        response.status
+                    );
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                console.log(
+                    "Pickup data:",
+                    data
+                );
+
+
+                let pickups = [];
+
+
+                if (Array.isArray(data)) {
+
+                    pickups = data;
+
+                }
+
+                else if (
+                    data &&
+                    Array.isArray(data.pickups)
+                ) {
+
+                    pickups = data.pickups;
+
+                }
+
+
+                allPickups = pickups;
+
+
+                updateStatistics(
+                    pickups
+                );
+
+
+                displayPickups(
+                    pickups
+                );
+
+            }
+
+
+            catch (error) {
+
+                console.error(
+                    "Error loading pickups:",
+                    error
+                );
+
+
+                tableBody.innerHTML = `
+
+                    <tr>
+
+                        <td
+                            colspan="10"
+                            class="error">
+
+                            ❌ Unable to connect
+                            to backend.
+
+                            <br><br>
+
+                            Make sure your backend
+                            is running.
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+
+        }
+
+
+        // =========================================
+        // SEARCH AND FILTER
+        // =========================================
+
+        function filterPickups() {
+
+            const search =
+                document.getElementById(
+                    "searchInput"
+                )
+                .value
+                .toLowerCase();
+
+
+            const selectedStatus =
+                document.getElementById(
+                    "statusFilter"
+                )
+                .value;
+
+
+            const filteredPickups =
+                allPickups.filter(
+                    function (pickup) {
+
+                        const searchableText = `
+
+                            ${pickup.name || ""}
+
+                            ${pickup.email || ""}
+
+                            ${pickup.mobile || ""}
+
+                            ${pickup.location || ""}
+
+                            ${pickup.wasteType || ""}
+
+                        `.toLowerCase();
+
+
+                        const matchesSearch =
+                            searchableText.includes(
+                                search
+                            );
+
+
+                        const matchesStatus =
+                            !selectedStatus ||
+                            (pickup.status || "Pending")
+                            === selectedStatus;
+
+
+                        return (
+                            matchesSearch &&
+                            matchesStatus
+                        );
+
+                    }
+                );
+
+
+            displayPickups(
+                filteredPickups
+            );
+
+        }
+
+
+        // =========================================
+        // CHANGE PICKUP STATUS
+        // =========================================
+
+        function changePickupStatus(
+            pickupId,
+            newStatus
+        ) {
+
+            if (!newStatus) {
+
+                return;
+
+            }
+
+
+            updateStatus(
+                pickupId,
+                newStatus
+            );
+
+        }
+
+
+        // =========================================
+        // UPDATE STATUS
+        // =========================================
+
+        async function updateStatus(
+
+         
+            pickupId,
+            newStatus
+        ) {
+
+            try {
+
+                const confirmed =
+                    confirm(
+                        "Change pickup status to " +
+                        newStatus +
+                        "?"
+                    );
+
+
+                if (!confirmed) {
+
+                    return;
+
+                }
+
+
+                const response =
+                    await fetch(
+                        "http://localhost:5000/api/pickups/" +
+                        pickupId +
+                        "/status",
+                        {
+
+                            method: "PUT",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body: JSON.stringify({
+
+                                status: newStatus
+
+                            })
+
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                console.log(
+                    "Status update:",
+                    result
+                );
+
+
+                if (!response.ok) {
+
+                    alert(
+                        result.message ||
+                        "Failed to update status."
+                    );
+
+                    return;
+
+                }
+
+
+                alert(
+                    "Pickup status updated to " +
+                    newStatus +
+                    "!"
+                );
+
+
+                // Reload data
+                loadPickups();
+
+            }
+
+
+            catch (error) {
+
+                console.error(
+                    "Status update error:",
+                    error
+                );
+
+
+                alert(
+                    "Unable to update pickup status."
+                );
+
+            }
+
+        }
+           async function deletePickup(pickupId) {
+
+    const confirmed = confirm(
+        "Are you sure you want to delete this pickup request?"
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:5000/api/pickups/" + pickupId,
+            {
+                method: "DELETE"
+            }
+        );
+
+        const result = await response.json();
+
+        console.log("Delete response:", result);
+
+        if (!response.ok) {
+
+            alert(
+                result.message ||
+                "Failed to delete pickup request."
+            );
+
+            return;
+        }
+
+        alert("Pickup request deleted successfully!");
+
+        loadPickups();
+
+    } catch (error) {
+
+        console.error(
+            "Delete error:",
+            error
+        );
+
+        alert(
+            "Unable to delete pickup request."
+        );
+    }
+}
+
+
+        // =========================================
+        // SEARCH EVENTS
+        // =========================================
+
+        document
+            .getElementById("searchInput")
+            .addEventListener(
+                "keyup",
+                filterPickups
+            );
+
+
+        document
+            .getElementById("statusFilter")
+            .addEventListener(
+                "change",
+                filterPickups
+            );
+
+
+        // =========================================
+        // LOAD DATA WHEN PAGE OPENS
+        // =========================================
+
+        loadPickups();
+        loadCollectionPoints();
+        function logoutAdmin() {
+
+    const confirmed = confirm(
+        "Are you sure you want to logout?"
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    sessionStorage.removeItem("adminLoggedIn");
+
+    window.location.href = "admin-login.html";
+}
+// =========================================
+// COLLECTION POINTS
+// =========================================
+
+async function loadCollectionPoints() {
+
+    const tableBody =
+        document.getElementById("collectionPointsBody");
+
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="5" class="loading">
+                Loading collection points...
+            </td>
+        </tr>
+    `;
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:5000/api/collection-points"
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message || "Failed to load locations."
+            );
+        }
+
+        const points = data.points || [];
+
+        if (points.length === 0) {
+
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="empty">
+                        No collection points found.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        tableBody.innerHTML = "";
+
+        points.forEach(function(point) {
+
+            const wasteTypes =
+                Array.isArray(point.wasteTypes)
+                    ? point.wasteTypes.join(", ")
+                    : point.wasteTypes || "";
+
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+
+                <td>
+                    ${point.name || ""}
+                </td>
+
+                <td>
+                    ${point.address || ""}
+                </td>
+
+                <td>
+                    ${wasteTypes}
+                </td>
+
+                <td>
+                    <span class="status">
+                        ${point.status || ""}
+                    </span>
+                </td>
+
+                <td>
+
+                    <div class="actions">
+
+                        <button
+                            class="action-btn approve-btn"
+                            onclick="editCollectionPoint(
+                                '${point._id}',
+                                '${escapeValue(point.name)}',
+                                '${escapeValue(point.address)}',
+                                '${escapeValue(wasteTypes)}',
+                                '${escapeValue(point.status)}'
+                            )">
+                            ✏️ Edit
+                        </button>
+
+                        <button
+                            class="action-btn reject-btn"
+                            onclick="deleteCollectionPoint(
+                                '${point._id}'
+                            )">
+                            🗑️ Delete
+                        </button>
+
+                    </div>
+
+                </td>
+            `;
+
+            tableBody.appendChild(row);
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Collection Points Error:",
+            error
+        );
+
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="5" class="error">
+                    ❌ Unable to load collection points.
+                    <br><br>
+                    Make sure your backend is running.
+                </td>
+            </tr>
+        `;
+    }
+}
+
+
+// =========================================
+// ESCAPE VALUE
+// =========================================
+
+function escapeValue(value) {
+
+    return String(value || "")
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'");
+}
+
+
+// =========================================
+// ADD COLLECTION POINT
+// =========================================
+
+document
+    .getElementById("collectionPointForm")
+    .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const name =
+            document.getElementById("pointName").value.trim();
+
+        const address =
+            document.getElementById("pointAddress").value.trim();
+
+        const wasteType =
+            document.getElementById("pointWasteTypes").value.trim();
+
+        const status =
+            document.getElementById("pointStatus").value;
+
+        if (!name || !address || !wasteType || !status) {
+
+            alert("Please fill all fields.");
+
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                "http://localhost:5000/api/collection-points",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        name: name,
+
+                        address: address,
+
+                        wasteTypes: [wasteType],
+
+                        status: status
+
+                    })
+                }
+            );
+
+            const result =
+                await response.json();
+
+            if (!response.ok) {
+
+                alert(
+                    result.message ||
+                    "Failed to add collection point."
+                );
+
+                return;
+            }
+
+            alert(
+                "Collection point added successfully!"
+            );
+
+            document
+                .getElementById("collectionPointForm")
+                .reset();
+
+            loadCollectionPoints();
+
+        } catch (error) {
+
+            console.error(
+                "Add Collection Point Error:",
+                error
+            );
+
+            alert(
+                "Unable to connect to backend."
+            );
+        }
+
+    });
+
+
+// =========================================
+// DELETE COLLECTION POINT
+// =========================================
+
+async function deleteCollectionPoint(pointId) {
+
+    const confirmed = confirm(
+        "Are you sure you want to delete this collection point?"
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:5000/api/collection-points/" +
+            pointId,
+            {
+                method: "DELETE"
+            }
+        );
+
+        const result =
+            await response.json();
+
+        if (!response.ok) {
+
+            alert(
+                result.message ||
+                "Failed to delete collection point."
+            );
+
+            return;
+        }
+
+        alert(
+            "Collection point deleted successfully!"
+        );
+
+        loadCollectionPoints();
+
+    } catch (error) {
+
+        console.error(
+            "Delete Collection Point Error:",
+            error
+        );
+
+        alert(
+            "Unable to connect to backend."
+        );
+    }
+}
+
+
+// =========================================
+// EDIT COLLECTION POINT
+// =========================================
+
+async function editCollectionPoint(
+    pointId,
+    oldName,
+    oldAddress,
+    oldWasteType,
+    oldStatus
+) {
+
+    const name = prompt(
+        "Enter collection point name:",
+        oldName
+    );
+
+    if (name === null) {
+        return;
+    }
+
+    const address = prompt(
+        "Enter full address:",
+        oldAddress
+    );
+
+    if (address === null) {
+        return;
+    }
+
+    const wasteType = prompt(
+        "Enter waste type:",
+        oldWasteType
+    );
+
+    if (wasteType === null) {
+        return;
+    }
+
+    const status = prompt(
+        "Enter status:",
+        oldStatus
+    );
+
+    if (status === null) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:5000/api/collection-points/" +
+            pointId,
+            {
+                method: "PUT",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    name: name.trim(),
+
+                    address: address.trim(),
+
+                    wasteTypes: [
+                        wasteType.trim()
+                    ],
+
+                    status: status.trim()
+
+                })
+            }
+        );
+
+        const result =
+            await response.json();
+
+        if (!response.ok) {
+
+            alert(
+                result.message ||
+                "Failed to update collection point."
+            );
+
+            return;
+        }
+
+        alert(
+            "Collection point updated successfully!"
+        );
+
+        loadCollectionPoints();
+
+    } catch (error) {
+
+        console.error(
+            "Edit Collection Point Error:",
+            error
+        );
+
+        alert(
+            "Unable to connect to backend."
+        );
+    }
+}
+// ==========================================
+// STEP 16B - ADMIN LOGIN PROTECTION
+// ==========================================
+
+const adminLoggedIn =
+    localStorage.getItem("adminLoggedIn");
+    sessionStorage.getItem("adminLoggedIn");
+
+if (adminLoggedIn !== "true") {
+    alert("Admin login required.");
+    window.location.href = "admin-login.html";
+}
+
+    </script>
+
+</body>
+
+</html>

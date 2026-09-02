@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EcoCollect - Track Pickup</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7f5;
+            color: #333;
+        }
+
+        header {
+            background: #198754;
+            color: white;
+            text-align: center;
+            padding: 30px 15px;
+        }
+
+        header h1 {
+            margin: 0 0 8px;
+        }
+
+        header p {
+            margin: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 850px;
+            margin: 40px auto;
+        }
+
+        .search-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-box h2 {
+            color: #198754;
+            margin-top: 0;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 6px;
+            background: #198754;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #146c43;
+        }
+
+        .result {
+            display: none;
+            margin-top: 25px;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .result h2 {
+            color: #198754;
+        }
+
+        .details {
+            margin-bottom: 25px;
+        }
+
+        .details p {
+            margin: 8px 0;
+        }
+
+        .timeline {
+            margin-top: 25px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            background: #eee;
+            font-weight: bold;
+        }
+
+        .step.active {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .step.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .step.rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .error {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            background: #f8d7da;
+            color: #721c24;
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>♻️ EcoCollect</h1>
+    <p>Track Your Waste Pickup</p>
+</header>
+
+<div class="container">
+
+    <div class="search-box">
+
+        <h2>Track Pickup Request</h2>
+
+        <p>
+            Enter your Pickup Request ID to check the current status.
+        </p>
+
+        <input
+            type="text"
+            id="pickupId"
+            placeholder="Enter Pickup Request ID"
+        >
+
+        <button onclick="trackPickup()">
+            🔍 Track Pickup
+        </button>
+
+        <div
+            class="loading"
+            id="loading">
+            Checking pickup status...
+        </div>
+
+        <div
+            class="error"
+            id="error">
+        </div>
+
+    </div>
+
+    <div
+        class="result"
+        id="result">
+
+        <h2>Pickup Details</h2>
+
+        <div class="details">
+
+            <p>
+                <strong>Name:</strong>
+                <span id="name"></span>
+            </p>
+
+            <p>
+                <strong>Waste Type:</strong>
+                <span id="wasteType"></span>
+            </p>
+
+            <p>
+                <strong>Weight:</strong>
+                <span id="weight"></span>
+            </p>
+
+            <p>
+                <strong>Location:</strong>
+                <span id="location"></span>
+            </p>
+
+            <p>
+                <strong>Current Status:</strong>
+                <span id="currentStatus"></span>
+            </p>
+
+        </div>
+
+        <div class="timeline">
+
+    <h3>Pickup Progress</h3>
+
+    <div class="step" data-status="Pending">
+        🟡 Pending
+    </div>
+
+    <div class="step" data-status="Approved">
+        🟢 Approved
+    </div>
+
+    <div class="step" data-status="Pickup Assigned">
+        📋 Pickup Assigned
+    </div>
+
+    <div class="step" data-status="Out for Pickup">
+        🚚 Out for Pickup
+    </div>
+
+    <div class="step" data-status="Picked Up">
+        📦 Picked Up
+    </div>
+
+    <div class="step" data-status="Completed">
+        ✅ Completed
+    </div>
+
+    <div class="step" data-status="Rejected">
+        ❌ Rejected
+    </div>
+
+</div>
+        </div>
+
+    </div>
+
+</div>
+
+<footer>
+    © 2026 EcoCollect
+</footer>
+
+<script>
+
+    const statusOrder = [
+        "Pending",
+        "Approved",
+        "Pickup Assigned",
+        "Out for Pickup",
+        "Picked Up",
+        "Completed"
+    ];
+
+    async function trackPickup() {
+
+        const pickupId =
+            document
+                .getElementById("pickupId")
+                .value
+                .trim();
+
+        const result =
+            document.getElementById("result");
+
+        const error =
+            document.getElementById("error");
+
+        const loading =
+            document.getElementById("loading");
+
+        if (!pickupId) {
+
+            error.textContent =
+                "Please enter your Pickup Request ID.";
+
+            error.style.display = "block";
+            result.style.display = "none";
+
+            return;
+        }
+
+        error.style.display = "none";
+        result.style.display = "none";
+        loading.style.display = "block";
+
+        try {
+
+            const response =
+                await fetch(
+                    "http://localhost:5000/api/pickups/" +
+                    pickupId
+                );
+
+            const data =
+                await response.json();
+
+            loading.style.display = "none";
+
+            if (!response.ok) {
+
+                error.textContent =
+                    data.message ||
+                    "Pickup request not found.";
+
+                error.style.display = "block";
+
+                return;
+            }
+
+            const pickup = data.pickup;
+
+            document.getElementById("name").textContent =
+                pickup.name || "";
+
+            document.getElementById("wasteType").textContent =
+                pickup.wasteType || "";
+
+            document.getElementById("weight").textContent =
+                pickup.weight || "";
+
+            document.getElementById("location").textContent =
+                pickup.location || "";
+
+            document.getElementById("currentStatus").textContent =
+                pickup.status || "Pending";
+
+            updateTimeline(
+                pickup.status || "Pending"
+            );
+
+            result.style.display = "block";
+
+        } catch (err) {
+
+            console.error(
+                "Tracking error:",
+                err
+            );
+
+            loading.style.display = "none";
+
+            error.textContent =
+                "Unable to connect to backend.";
+
+            error.style.display = "block";
+        }
+    }
+
+
+    function updateTimeline(currentStatus) {
+
+    const steps = document.querySelectorAll(".step");
+
+    const currentIndex =
+        statusOrder.indexOf(currentStatus);
+
+    steps.forEach(function(step) {
+
+        const stepStatus =
+            step.getAttribute("data-status");
+
+        const stepIndex =
+            statusOrder.indexOf(stepStatus);
+
+        step.classList.remove(
+            "active",
+            "completed",
+            "rejected"
+        );
+
+        // Rejected pickup
+        if (currentStatus === "Rejected") {
+
+            if (stepStatus === "Rejected") {
+                step.classList.add("rejected");
+            }
+
+            return;
+        }
+
+        // Normal progress
+        if (stepIndex < currentIndex) {
+
+            step.classList.add("completed");
+
+        } else if (stepIndex === currentIndex) {
+
+            step.classList.add("active");
+        }
+
+    });
+}
+</script>
+</body>
+</html>

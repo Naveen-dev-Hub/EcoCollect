@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EcoCollect - Sign Up</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen bg-green-50 flex items-center justify-center px-4 py-8">
+
+    <!-- SIGNUP CARD -->
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+
+        <!-- LOGO -->
+        <div class="text-center mb-7">
+
+            <div class="inline-flex items-center justify-center
+                        w-14 h-14 rounded-full bg-green-100 mb-3">
+
+                <span class="text-3xl">♻️</span>
+
+            </div>
+
+            <h1 class="text-3xl font-bold text-green-700">
+                EcoCollect
+            </h1>
+
+            <h2 class="text-xl font-semibold text-gray-800 mt-2">
+                Create Your Account
+            </h2>
+
+            <p class="text-gray-500 text-sm mt-1">
+                Join us for a cleaner and greener future
+            </p>
+
+        </div>
+
+
+        <!-- SIGNUP FORM -->
+        <form id="signupForm" class="space-y-5">
+
+            <!-- NAME -->
+            <div>
+
+                <label
+                    for="name"
+                    class="block text-sm font-medium text-gray-700 mb-2">
+
+                    Full Name
+
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Enter your full name"
+                    required
+                    class="w-full px-4 py-3 border border-gray-300
+                           rounded-lg outline-none
+                           focus:ring-2 focus:ring-green-500
+                           focus:border-green-500">
+
+            </div>
+
+
+            <!-- EMAIL -->
+            <div>
+
+                <label
+                    for="email"
+                    class="block text-sm font-medium text-gray-700 mb-2">
+
+                    Email Address
+
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                    class="w-full px-4 py-3 border border-gray-300
+                           rounded-lg outline-none
+                           focus:ring-2 focus:ring-green-500
+                           focus:border-green-500">
+
+            </div>
+
+
+            <!-- PHONE -->
+            <div>
+
+                <label
+                    for="phone"
+                    class="block text-sm font-medium text-gray-700 mb-2">
+
+                    Mobile Number
+
+                </label>
+
+                <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    placeholder="Enter 10-digit mobile number"
+                    maxlength="10"
+                    pattern="[0-9]{10}"
+                    required
+                    class="w-full px-4 py-3 border border-gray-300
+                           rounded-lg outline-none
+                           focus:ring-2 focus:ring-green-500
+                           focus:border-green-500">
+
+            </div>
+
+
+            <!-- PASSWORD -->
+            <div>
+
+                <label
+                    for="password"
+                    class="block text-sm font-medium text-gray-700 mb-2">
+
+                    Password
+
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Create a password"
+                    minlength="6"
+                    required
+                    class="w-full px-4 py-3 border border-gray-300
+                           rounded-lg outline-none
+                           focus:ring-2 focus:ring-green-500
+                           focus:border-green-500">
+
+            </div>
+
+
+            <!-- CONFIRM PASSWORD -->
+            <div>
+
+                <label
+                    for="confirmPassword"
+                    class="block text-sm font-medium text-gray-700 mb-2">
+
+                    Confirm Password
+
+                </label>
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    placeholder="Confirm your password"
+                    minlength="6"
+                    required
+                    class="w-full px-4 py-3 border border-gray-300
+                           rounded-lg outline-none
+                           focus:ring-2 focus:ring-green-500
+                           focus:border-green-500">
+
+            </div>
+
+
+            <!-- TERMS -->
+            <div class="flex items-start gap-2">
+
+                <input
+                    type="checkbox"
+                    id="terms"
+                    required
+                    class="mt-1 w-4 h-4 accent-green-600">
+
+                <label
+                    for="terms"
+                    class="text-sm text-gray-600">
+
+                    I agree to the
+
+                    <span class="text-green-600 font-medium">
+                        Terms & Conditions
+                    </span>
+
+                </label>
+
+            </div>
+
+
+            <!-- CREATE BUTTON -->
+            <div class="flex justify-center pt-2">
+
+                <button
+                    type="submit"
+                    id="createAccountBtn"
+                    class="px-10 py-3 bg-green-600 text-white
+                           rounded-lg font-semibold
+                           hover:bg-green-700
+                           active:scale-95
+                           transition duration-200
+                           shadow-md">
+
+                    Create Account
+
+                </button>
+
+            </div>
+
+        </form>
+
+
+        <!-- MESSAGE -->
+        <p
+            id="message"
+            class="text-center text-sm mt-5 font-medium min-h-[20px]">
+
+        </p>
+
+
+        <!-- LOGIN -->
+        <div class="text-center mt-6 pt-5 border-t border-gray-200">
+
+            <p class="text-gray-600 text-sm">
+
+                Already have an account?
+
+                <a
+                    href="login.html"
+                    class="text-green-600 font-semibold
+                           hover:text-green-700">
+
+                    Login
+
+                </a>
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- JAVASCRIPT -->
+    <script>
+
+        const signupForm =
+            document.getElementById("signupForm");
+
+        const message =
+            document.getElementById("message");
+
+        const createAccountBtn =
+            document.getElementById("createAccountBtn");
+
+
+        signupForm.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+
+                // =========================================
+                // GET FORM VALUES
+                // =========================================
+
+                const name =
+                    document.getElementById("name")
+                        .value
+                        .trim();
+
+                const email =
+                    document.getElementById("email")
+                        .value
+                        .trim();
+
+                const phone =
+                    document.getElementById("phone")
+                        .value
+                        .trim();
+
+                const password =
+                    document.getElementById("password")
+                        .value;
+
+                const confirmPassword =
+                    document.getElementById("confirmPassword")
+                        .value;
+
+
+                // =========================================
+                // PASSWORD CHECK
+                // =========================================
+
+                if (password !== confirmPassword) {
+
+                    message.textContent =
+                        "Passwords do not match.";
+
+                    message.className =
+                        "text-center text-sm mt-5 font-medium text-red-600";
+
+                    return;
+                }
+
+
+                // =========================================
+                // PASSWORD LENGTH
+                // =========================================
+
+                if (password.length < 6) {
+
+                    message.textContent =
+                        "Password must contain at least 6 characters.";
+
+                    message.className =
+                        "text-center text-sm mt-5 font-medium text-red-600";
+
+                    return;
+                }
+
+
+                // =========================================
+                // PHONE CHECK
+                // =========================================
+
+                if (!/^[0-9]{10}$/.test(phone)) {
+
+                    message.textContent =
+                        "Please enter a valid 10-digit mobile number.";
+
+                    message.className =
+                        "text-center text-sm mt-5 font-medium text-red-600";
+
+                    return;
+                }
+
+
+                // =========================================
+                // SHOW LOADING
+                // =========================================
+
+                message.textContent =
+                    "Creating account...";
+
+                message.className =
+                    "text-center text-sm mt-5 font-medium text-blue-600";
+
+
+                createAccountBtn.disabled = true;
+
+                createAccountBtn.textContent =
+                    "Creating...";
+
+
+                // =========================================
+                // SEND DATA TO SERVER
+                // =========================================
+
+                try {
+
+                    console.log(
+                        "Sending signup request..."
+                    );
+
+
+                    const response =
+                        await fetch(
+                            "http://localhost:5000/api/signup",
+                            {
+
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+
+                                    name: name,
+
+                                    email: email,
+
+                                    phone: phone,
+
+                                    password: password
+
+                                })
+
+                            }
+                        );
+
+
+                    console.log(
+                        "Server status:",
+                        response.status
+                    );
+
+
+                    const data =
+                        await response.json();
+
+
+                    console.log(
+                        "Server response:",
+                        data
+                    );
+
+
+                    // =====================================
+                    // SUCCESS
+                    // =====================================
+
+                    if (response.ok && data.success) {
+
+                        message.textContent =
+                            "Account created successfully!";
+
+                        message.className =
+                            "text-center text-sm mt-5 font-medium text-green-600";
+
+
+                        signupForm.reset();
+
+
+                        createAccountBtn.textContent =
+                            "Account Created";
+
+
+                        // Go to login
+                        setTimeout(function () {
+
+                            window.location.href =
+                                "login.html";
+
+                        }, 1500);
+
+
+                        return;
+                    }
+
+
+                    // =====================================
+                    // SERVER ERROR
+                    // =====================================
+
+                    message.textContent =
+                        data.message ||
+                        "Unable to create account.";
+
+                    message.className =
+                        "text-center text-sm mt-5 font-medium text-red-600";
+
+
+                    createAccountBtn.disabled = false;
+
+                    createAccountBtn.textContent =
+                        "Create Account";
+
+
+                }
+
+                // =========================================
+                // CONNECTION ERROR
+                // =========================================
+
+                catch (error) {
+
+                    console.error(
+                        "SIGNUP ERROR:",
+                        error
+                    );
+
+
+                    message.textContent =
+                        "Unable to connect to EcoCollect server.";
+
+                    message.className =
+                        "text-center text-sm mt-5 font-medium text-red-600";
+
+
+                    createAccountBtn.disabled = false;
+
+                    createAccountBtn.textContent =
+                        "Create Account";
+
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>
