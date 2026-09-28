@@ -1649,7 +1649,7 @@ async function loadCollectionPoints() {
     try {
 
         const response = await fetch(
-            "http://localhost:5000/api/collection-points"
+            "https://ecocollect-backend-siaa.onrender.com/api/pickup"
         );
 
         const data = await response.json();

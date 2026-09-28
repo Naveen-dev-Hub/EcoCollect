@@ -110,7 +110,7 @@ async function submitPickupRequest(event) {
 
         const response =
             await fetch(
-                "http://localhost:5000/api/pickup",
+                "https://ecocollect-backend-siaa.onrender.com/api/pickup",
                 {
                     method: "POST",
                     body: formData
@@ -226,7 +226,7 @@ async function loadCollectionPoints() {
 
         const response =
             await fetch(
-                "http://localhost:5000/api/collection-points"
+                "https://ecocollect-backend-siaa.onrender.com/api/pickup"
             );
 
 

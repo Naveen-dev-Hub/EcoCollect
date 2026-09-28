@@ -790,7 +790,7 @@
         pickup.photo
         ? `
             <a
-                href="http://localhost:5000/uploads/${pickup.photo}"
+                href=""https://ecocollect-backend-siaa.onrender.com/api/pickup"
                 target="_blank">
 
                 📷 View Photo
@@ -1058,7 +1058,7 @@
 
                 const response =
                     await fetch(
-                        "http://localhost:5000/api/pickups"
+                        "https://ecocollect-backend-siaa.onrender.com/api/pickup"
                     );
 
 
@@ -1273,7 +1273,7 @@
 
                 const response =
                     await fetch(
-                        "http://localhost:5000/api/pickups/" +
+                        "https://ecocollect-backend-siaa.onrender.com/api/pickup" +
                         pickupId +
                         "/status",
                         {
@@ -1360,7 +1360,7 @@
     try {
 
         const response = await fetch(
-            "http://localhost:5000/api/pickups/" + pickupId,
+            "https://ecocollect-backend-siaa.onrender.com/api/pickup" + pickupId,
             {
                 method: "DELETE"
             }
@@ -1458,7 +1458,7 @@ async function loadCollectionPoints() {
     try {
 
         const response = await fetch(
-            "http://localhost:5000/api/collection-points"
+            "https://ecocollect-backend-siaa.onrender.com/api/pickup"
         );
 
         const data = await response.json();
@@ -1612,7 +1612,7 @@ document
         try {
 
             const response = await fetch(
-                "http://localhost:5000/api/collection-points",
+                "https://ecocollect-backend-siaa.onrender.com/api/pickup",
                 {
                     method: "POST",
 
@@ -1690,7 +1690,7 @@ async function deleteCollectionPoint(pointId) {
     try {
 
         const response = await fetch(
-            "http://localhost:5000/api/collection-points/" +
+            "https://ecocollect-backend-siaa.onrender.com/api/pickup" +
             pointId,
             {
                 method: "DELETE"
@@ -1781,7 +1781,7 @@ async function editCollectionPoint(
     try {
 
         const response = await fetch(
-            "http://localhost:5000/api/collection-points/" +
+            "https://ecocollect-backend-siaa.onrender.com/api/pickup" +
             pointId,
             {
                 method: "PUT",
