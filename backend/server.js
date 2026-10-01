@@ -33,6 +33,7 @@ if (!process.env.MONGODB_URI) {
     console.error("MONGODB_URI is missing in .env file.");
     process.exit(1);
 }
+console.log("MONGODB_URI starts with:", process.env.MONGODB_URI?.substring(0, 20));
 
 const client = new MongoClient(
     process.env.MONGODB_URI
@@ -48,7 +49,11 @@ let collectionPointsCollection;
 // MIDDLEWARE
 // ======================================================
 
-app.use(cors());
+app.use(cors({
+    origin: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+}));
 
 app.use(express.json());
 

@@ -268,156 +268,79 @@
     © 2026 EcoCollect
 </footer>
 
+
 <script>
 
-    const statusOrder = [
-        "Pending",
-        "Approved",
-        "Pickup Assigned",
-        "Out for Pickup",
-        "Picked Up",
-        "Completed"
-    ];
+async function trackPickup() {
 
-    async function trackPickup() {
+    const pickupId = document.getElementById("pickupId").value.trim();
 
-        const pickupId =
-            document
-                .getElementById("pickupId")
-                .value
-                .trim();
+    const loading = document.getElementById("loading");
+    const error = document.getElementById("error");
+    const result = document.getElementById("result");
 
-        const result =
-            document.getElementById("result");
+    // Hide old messages
+    error.style.display = "none";
+    result.style.display = "none";
 
-        const error =
-            document.getElementById("error");
-
-        const loading =
-            document.getElementById("loading");
-
-        if (!pickupId) {
-
-            error.textContent =
-                "Please enter your Pickup Request ID.";
-
-            error.style.display = "block";
-            result.style.display = "none";
-
-            return;
-        }
-
-        error.style.display = "none";
-        result.style.display = "none";
-        loading.style.display = "block";
-
-        try {
-
-            const response =
-                await fetch(
-                    "https://ecocollect-backend-siaa.onrender.com/api/pickup" +
-                    pickupId
-                );
-
-            const data =
-                await response.json();
-
-            loading.style.display = "none";
-
-            if (!response.ok) {
-
-                error.textContent =
-                    data.message ||
-                    "Pickup request not found.";
-
-                error.style.display = "block";
-
-                return;
-            }
-
-            const pickup = data.pickup;
-
-            document.getElementById("name").textContent =
-                pickup.name || "";
-
-            document.getElementById("wasteType").textContent =
-                pickup.wasteType || "";
-
-            document.getElementById("weight").textContent =
-                pickup.weight || "";
-
-            document.getElementById("location").textContent =
-                pickup.location || "";
-
-            document.getElementById("currentStatus").textContent =
-                pickup.status || "Pending";
-
-            updateTimeline(
-                pickup.status || "Pending"
-            );
-
-            result.style.display = "block";
-
-        } catch (err) {
-
-            console.error(
-                "Tracking error:",
-                err
-            );
-
-            loading.style.display = "none";
-
-            error.textContent =
-                "Unable to connect to backend.";
-
-            error.style.display = "block";
-        }
+    if (!pickupId) {
+        alert("Please enter Tracking ID");
+        return;
     }
 
+    loading.style.display = "block";
 
-    function updateTimeline(currentStatus) {
+    try {
 
-    const steps = document.querySelectorAll(".step");
-
-    const currentIndex =
-        statusOrder.indexOf(currentStatus);
-
-    steps.forEach(function(step) {
-
-        const stepStatus =
-            step.getAttribute("data-status");
-
-        const stepIndex =
-            statusOrder.indexOf(stepStatus);
-
-        step.classList.remove(
-            "active",
-            "completed",
-            "rejected"
+        const response = await fetch(
+            `https://ecocollect-backend-siaa.onrender.com/api/pickups/${encodeURIComponent(pickupId)}`
         );
 
-        // Rejected pickup
-        if (currentStatus === "Rejected") {
-
-            if (stepStatus === "Rejected") {
-                step.classList.add("rejected");
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error("Tracking ID not found");
             }
 
-            return;
+            throw new Error("Unable to connect to backend");
         }
 
-        // Normal progress
-        if (stepIndex < currentIndex) {
+        const data = await response.json();
 
-            step.classList.add("completed");
+       console.log("API Data:", data);
 
-        } else if (stepIndex === currentIndex) {
+        const pickup = data.pickup;
 
-            step.classList.add("active");
-        }
+        // Show pickup details
+        document.getElementById("name").textContent =
+            pickup.name || "N/A";
 
-    });
+        document.getElementById("wasteType").textContent =
+            pickup.wasteType || "N/A";
+
+        document.getElementById("weight").textContent =
+            pickup.weight || "N/A";
+
+        document.getElementById("location").textContent =
+            pickup.location || "N/A";
+
+        document.getElementById("currentStatus").textContent =
+            pickup.status || "Pending";
+
+        // Show result box
+        result.style.display = "block";
+
+    } catch (error) {
+
+        console.error("Tracking Error:", error);
+
+        document.getElementById("error").textContent =
+            error.message;
+
+        document.getElementById("error").style.display = "block";
+
+    } finally {
+
+        loading.style.display = "none";
+    }
 }
 </script>
-</body>
-</html>

@@ -1636,7 +1636,7 @@ footer p {
     -->
 
     <script src="./script.js"></script>
-    <script>
+   <script>
 function toggleMobileMenu() {
     const nav = document.querySelector("nav");
 
@@ -1644,97 +1644,70 @@ function toggleMobileMenu() {
         nav.classList.toggle("mobile-open");
     }
 }
+
 async function loadCollectionPoints() {
-
     try {
-
+        // Backend URL updated to fetch collection points or pickups correctly
         const response = await fetch(
-            "https://ecocollect-backend-siaa.onrender.com/api/pickup"
+            "https://ecocollect-backend-siaa.onrender.com/api/collection-points"
         );
 
-        const data = await response.json();
-
-        console.log("Collection Points:", data);
-
-        if (!data.success) {
-            console.error(data.message);
-            return;
+        // Check if response is valid JSON before parsing
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            throw new Error(`Server returned status ${response.status} (Non-JSON response)`);
         }
 
-        const points = data.points || [];
+        const data = await response.json();
+        console.log("Collection Points:", data);
 
-        console.log(
-            `${points.length} collection point(s) loaded.`
-        );
+        // Array / Object structure fallback
+        const points = Array.isArray(data) ? data : (data.points || data.data || []);
 
-        // Find the collection-points container
-        const container =
-            document.getElementById("collectionPointsContainer");
+        const container = document.getElementById("collectionPointsContainer");
 
         if (!container) {
-            console.log(
-                "collectionPointsContainer not found."
-            );
+            console.log("collectionPointsContainer not found.");
             return;
         }
 
         if (points.length === 0) {
-
             container.innerHTML = `
                 <p class="text-muted">
                     No collection points available.
                 </p>
             `;
-
             return;
         }
 
         container.innerHTML = points.map(point => `
-
             <div class="card mb-3 shadow-sm">
-
                 <div class="card-body">
-
                     <h5 class="fw-bold">
                         📍 ${point.name || "Collection Point"}
                     </h5>
-
                     <p class="mb-2">
-                        ${point.address || "Address not available"}
+                        ${point.address || point.location || "Address not available"}
                     </p>
-
                     <p class="mb-2">
                         <strong>Waste Types:</strong>
                         ${
                             Array.isArray(point.wasteTypes)
                                 ? point.wasteTypes.join(", ")
-                                : point.wasteTypes || "Not specified"
+                                : point.wasteTypes || point.wasteType || "Not specified"
                         }
                     </p>
-
                     <span class="badge bg-success">
                         ${point.status || "Active"}
                     </span>
-
                 </div>
-
             </div>
-
         `).join("");
 
     } catch (error) {
-
-        console.error(
-            "COLLECTION POINT ERROR:",
-            error
-        );
-
+        console.error("COLLECTION POINT ERROR:", error);
     }
 }
+
 loadCollectionPoints();
-
 </script>
-
-</body>
-
-</html>

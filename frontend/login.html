@@ -166,7 +166,8 @@
 
     </div>
 
-
+    <!-- JavaScript -->
+    
     <!-- JavaScript -->
     <script>
 
@@ -184,7 +185,8 @@ loginForm.addEventListener("submit", async function (event) {
 
     try {
 
-        const response = await fetch("https://ecocollect-backend-siaa.onrender.com/api/pickup", {
+        // Endpoint ko /api/login kar diya gaya hai
+        const response = await fetch("https://ecocollect-backend-siaa.onrender.com/api/login", {
             method: "POST",
 
             headers: {
@@ -196,6 +198,12 @@ loginForm.addEventListener("submit", async function (event) {
                 password: password
             })
         });
+
+        // Response JSON hai ya nahi verify karne ke liye
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            throw new Error(`Invalid server response (${response.status})`);
+        }
 
         const data = await response.json();
 
@@ -235,7 +243,7 @@ loginForm.addEventListener("submit", async function (event) {
         console.error("LOGIN ERROR:", error);
 
         message.textContent =
-            "Unable to connect to backend server.";
+            "Unable to connect to backend server or invalid route.";
 
         message.className =
             "text-center text-sm mt-5 font-medium text-red-600";
@@ -243,9 +251,4 @@ loginForm.addEventListener("submit", async function (event) {
 
 });
 
-
-
     </script>
-
-</body>
-</html>
